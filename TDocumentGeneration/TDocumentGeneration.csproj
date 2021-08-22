@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>nuki</Authors>
+    <Company>tacta.io</Company>
+    <RepositoryUrl>https://github.com/nusreta/TDocumentGeneration</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
