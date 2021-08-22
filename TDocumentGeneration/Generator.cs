@@ -3,23 +3,24 @@ using System.IO;
 using Aspose.BarCode.Generation;
 using Aspose.Words;
 using Aspose.Words.Replacing;
+using Aspose.Words.Tables;
 using TDocumentGeneration.Models;
-using File = TDocumentGeneration.Models.File;
 
 namespace TDocumentGeneration
 {
     public class Generator
     {
-        public Generator(Licenses licenses = null)
+        public Generator(LicenseData license = null)
         {
-            if (licenses == null) return;
-            if (licenses.Words != null) new License().SetLicense(licenses.Words);
-            if (licenses.BarCode != null) new Aspose.BarCode.License().SetLicense(licenses.BarCode);
+            if (license == null) return;
+            if (license.Words != null) new License().SetLicense(license.Words);
+            if (license.BarCode != null) new Aspose.BarCode.License().SetLicense(license.BarCode);
         }
 
         public void Generate(Data data)
         {
-            var document = new Document(data.File.Template);
+            var template = new FileStream(data.File.TemplatePath, FileMode.Open);
+            var document = new Document(template);
 
             ImportPlaceholders(document, data.Placeholders);
             ImportBarCodeData(document, data.BarCodes);
@@ -27,7 +28,7 @@ namespace TDocumentGeneration
             SaveToDirectory(document, data.File);
         }
 
-        private static void ImportPlaceholders(Node document, IEnumerable<Placeholder> placeholders)
+        private static void ImportPlaceholders(Node document, IEnumerable<PlaceholderData> placeholders)
         {
             foreach (var placeholder in placeholders)
             {
@@ -35,7 +36,7 @@ namespace TDocumentGeneration
             }
         }
 
-        private static void ImportBarCodeData(Document document, IEnumerable<BarCode> barCodes)
+        private static void ImportBarCodeData(Document document, IEnumerable<BarCodeData> barCodes)
         {
             foreach (var barCode in barCodes)
             {
@@ -50,22 +51,27 @@ namespace TDocumentGeneration
             }
         }
 
-        private static void ImportTableData(Node document, IEnumerable<Table> tables)
+        private static void ImportTableData(Node document, IEnumerable<TableData> tables)
         {
             foreach (var tableData in tables)
             {
                 var bookmark = document.Range.Bookmarks[tableData.Bookmark];
-                var table = bookmark.BookmarkStart.GetAncestor(NodeType.Table) as Aspose.Words.Tables.Table;
+
+                if (!(bookmark.BookmarkStart.GetAncestor(NodeType.Table) is Table table)) return;
 
                 foreach (var rowData in tableData.GetOrderedRows)
                 {
-                    var row = (Aspose.Words.Tables.Row)table?.LastRow.Clone(true);
+                    var row = (Row) table.LastRow.Clone(true);
 
-                    foreach (Aspose.Words.Tables.Cell cell in row.Cells)
+                    if (row == null) return;
+
+                    foreach (var node in row.Cells)
                     {
+                        var cell = (Cell) node;
                         cell.RemoveAllChildren();
                         cell.EnsureMinimum();
-                        var run = new Run((Document)table.ParentNode.Document, rowData.GetCellText(row.Cells.IndexOf(cell)));
+                        var text = rowData.GetCellText(row.Cells.IndexOf(cell));
+                        var run = new Run((Document) table.ParentNode.Document, text);
                         cell.FirstParagraph.Runs.Add(run);
                     }
 
@@ -74,13 +80,13 @@ namespace TDocumentGeneration
             }
         }
 
-        private static void SaveToDirectory(Document document, File file)
+        private static void SaveToDirectory(Document document, FileData file)
         {
             using var stream = new MemoryStream();
 
             document.Save(stream, SaveFormat.Pdf);
 
-            System.IO.File.WriteAllBytes(file.GetPath(), stream.ReadAllBytes());
+            File.WriteAllBytes(file.GetPath(), stream.ReadAllBytes());
         }
     }
 }

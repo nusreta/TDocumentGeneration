@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Aspose.BarCode" Version="21.7.0" />
     <PackageReference Include="Aspose.Words" Version="21.8.0" />
   </ItemGroup>

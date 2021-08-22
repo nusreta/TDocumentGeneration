@@ -1,8 +1,8 @@
 ﻿namespace TDocumentGeneration.Models
 {
-    public class Placeholder
+    public class BarCodeData
     {
-        public string Name { get; set; }
+        public string Bookmark { get; set; }
         public string Text { get; set; }
     }
 }
