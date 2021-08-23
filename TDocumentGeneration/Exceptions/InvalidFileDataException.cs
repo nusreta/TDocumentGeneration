@@ -4,7 +4,7 @@ namespace TDocumentGeneration.Exceptions
 {
     public class InvalidFileDataException : Exception
     {
-        public InvalidFileDataException(string message) : base(message)
+        public InvalidFileDataException() : base("File data cannot be null.")
         {
             
         }

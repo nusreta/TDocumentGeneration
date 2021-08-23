@@ -30,6 +30,8 @@ namespace TDocumentGeneration
 
         private static void ImportPlaceholders(Node document, IEnumerable<PlaceholderData> placeholders)
         {
+            if (placeholders == null) return;
+
             foreach (var placeholder in placeholders)
             {
                 document.Range.Replace($"::{placeholder.Name}::", placeholder.Text, new FindReplaceOptions(FindReplaceDirection.Forward));
@@ -38,6 +40,8 @@ namespace TDocumentGeneration
 
         private static void ImportBarCodeData(Document document, IEnumerable<BarCodeData> barCodes)
         {
+            if (barCodes == null) return;
+
             foreach (var barCode in barCodes)
             {
                 var documentBuilder = new DocumentBuilder(document);
@@ -53,13 +57,15 @@ namespace TDocumentGeneration
 
         private static void ImportTableData(Node document, IEnumerable<TableData> tables)
         {
+            if (tables == null) return;
+
             foreach (var tableData in tables)
             {
                 var bookmark = document.Range.Bookmarks[tableData.Bookmark];
 
                 if (!(bookmark.BookmarkStart.GetAncestor(NodeType.Table) is Table table)) return;
 
-                foreach (var rowData in tableData.GetOrderedRows)
+                foreach (var rowData in tableData.OrderedRows)
                 {
                     var row = (Row) table.LastRow.Clone(true);
 
@@ -86,7 +92,7 @@ namespace TDocumentGeneration
 
             document.Save(stream, SaveFormat.Pdf);
 
-            File.WriteAllBytes(file.GetPath(), stream.ReadAllBytes());
+            File.WriteAllBytes(file.DestinationPath, stream.ReadAllBytes());
         }
     }
 }

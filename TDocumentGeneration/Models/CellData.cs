@@ -2,7 +2,12 @@
 {
     public class CellData
     {
-        public int Column { get; set; }
-        public string Text { get; set; }
+        public int ColumnIndex { get; }
+        public string Text { get; }
+
+        public CellData(int columnIndex, string text)
+        {
+            (ColumnIndex, Text) = (columnIndex, text);
+        }
     }
 }

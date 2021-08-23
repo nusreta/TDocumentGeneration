@@ -16,9 +16,15 @@ namespace TDocumentGeneration.Models
             IEnumerable<BarCodeData> barCodes = null,
             IEnumerable<TableData> tables = null)
         {
-            if (file == null) throw new InvalidFileDataException("File data cannot be null.");
+            
+            Validate(file);
 
             (File, Placeholders, BarCodes, Tables) = (file, placeholders, barCodes, tables);
+        }
+
+        private static void Validate(FileData file)
+        {
+            if (file == null) throw new InvalidFileDataException();
         }
     }
 }

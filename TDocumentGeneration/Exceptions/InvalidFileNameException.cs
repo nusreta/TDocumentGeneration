@@ -4,7 +4,7 @@ namespace TDocumentGeneration.Exceptions
 {
     public class InvalidFileNameException : Exception
     {
-        public InvalidFileNameException(string message) : base(message)
+        public InvalidFileNameException() : base("File name needs to have .pdf extension.")
         {
             
         }

@@ -5,9 +5,14 @@ namespace TDocumentGeneration.Models
 {
     public class RowData
     {
-        public int Number { get; set; }
-        public IEnumerable<CellData> Cells { get; set; }
+        public int RowIndex { get; }
+        public IEnumerable<CellData> Cells { get; }
 
-        public string GetCellText(int column) => Cells.Single(x => x.Column == column).Text;
+        public string GetCellText(int columnIndex) => Cells.Single(x => x.ColumnIndex == columnIndex).Text;
+
+        public RowData(int rowIndex, IEnumerable<CellData> cells)
+        {
+            (RowIndex, Cells) = (rowIndex, cells);
+        }
     }
 }
