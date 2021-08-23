@@ -7,12 +7,13 @@
  ``` Aspose.Words v21.8.0 ``` ``` Aspose.BarCode v21.7.0 ```
 
 
-The package contains helpers for generating template based pdf files with Aspose.
+The package contains helpers for generating template based PDF documents with Aspose.
+It provides possibility to fill out the template replacing placeholders with values, to create bar codes and to create tables with optional number of rows.
 
 
 ## Prerequisites
 
-Todo
+Before using the generator word template should be ready. 
 
 
 ## Usage
@@ -26,7 +27,13 @@ Todo
 
 ## Releases
 
-Todo
+### Previous
+
+### Latest
+- v1.0.0 - contains simple ```PDF``` template based generator 
+
+### Planned
+- add possibility to adjust format of table cells and bar code layout
 
  
 
