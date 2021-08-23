@@ -49,6 +49,8 @@ namespace TDocumentGeneration
 
                 var barcodeGenerator = new BarcodeGenerator(EncodeTypes.Code128, barCode.Text.SanitizeNonPrintableAsciiCharacters());
 
+                barcodeGenerator.Parameters.Barcode.CodeTextParameters.Location = CodeLocation.None;
+
                 var barcodeStream = new MemoryStream();
                 barcodeGenerator.Save(barcodeStream, BarCodeImageFormat.Png);
                 documentBuilder.InsertImage(barcodeStream);
