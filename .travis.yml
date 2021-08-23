@@ -2,6 +2,9 @@ language: shell
 os: windows
 mono: none
 
+before_script:
+- choco install dotnetcore-sdk
+
 script:
   - dotnet restore
   - dotnet build
