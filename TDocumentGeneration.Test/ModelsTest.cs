@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TDocumentGeneration.Exceptions;
 using TDocumentGeneration.Models;
 using Xunit;
@@ -31,5 +33,91 @@ namespace TDocumentGeneration.Test
             Assert.Throws<InvalidFileNameException>(() => 
                 new FileData(Path.Combine(_resources, "template.docx"), fileName, _resources));
 
+        [Theory]
+        [InlineData("")]
+        [InlineData("test")]
+        [InlineData("test.docx")]
+        [InlineData("template")]
+        public void GivenFileData_WithInvalidTemplatePath_ThrowInvalidTemplatePathException(string templateName) =>
+            Assert.Throws<InvalidTemplatePathException>(() =>
+                new FileData(Path.Combine(_resources, templateName), "test.pdf", _resources));
+
+        [Fact]
+        public void GivenFileData_WithInvalidDirectoryPath_ThrowInvalidDirectoryPathException() =>
+            Assert.Throws<InvalidDirectoryPathException>(() =>
+                new FileData(Path.Combine(_resources, "template.docx"), "test.pdf", Path.Combine(_resources, "destination")));
+
+        [Fact]
+        public void GivenFileData_DestinationPath_ShouldBeCorrect() =>
+            Assert.True(Path.Combine(_resources, "test.pdf") == 
+                        new FileData(Path.Combine(_resources, "template.docx"), "test.pdf", _resources).DestinationPath);
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public void GivenPlaceholderData_WithInvalidName_ThrowInvalidPlaceholderNameException(string name) =>
+            Assert.Throws<InvalidPlaceholderNameException>(() => new PlaceholderData(name, "value"));
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public void GivenBarCodeData_WithInvalidBookmark_ThrowInvalidBookmarkNameException(string bookmark) =>
+            Assert.Throws<InvalidBookmarkNameException>(() => new BarCodeData(bookmark, "value"));
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public void GivenTableData_WithInvalidBookmark_ThrowInvalidBookmarkNameException(string bookmark) =>
+            Assert.Throws<InvalidBookmarkNameException>(() => new TableData(bookmark, new List<RowData>()));
+
+        [Fact]
+        public void GivenTableData_WithInvalidDifferentNumberOfCellsInRows_ThrowInvalidRowDataException() =>
+            Assert.Throws<InvalidRowDataException>(() => new TableData("table", new List<RowData>
+            {
+                new RowData(0, new List<CellData>()),
+                new RowData(1, new List<CellData> { new CellData(0, "value") })
+            }));
+
+        [Fact]
+        public void GivenTableData_OrderedRows_ShouldContainRowsSortedByIndex()
+        {
+            // Given
+            var tableData = new TableData("table", new List<RowData>
+            {
+                new RowData(2, new List<CellData> {new CellData(0, "value")}),
+                new RowData(0, new List<CellData> {new CellData(0, "value")}),
+                new RowData(1, new List<CellData> {new CellData(0, "value")})
+            });
+
+            // When
+            var orderedRows = tableData.OrderedRows.ToList();
+
+            // Then
+            Assert.True(orderedRows[0].RowIndex == 0);
+            Assert.True(orderedRows[1].RowIndex == 1);
+            Assert.True(orderedRows[2].RowIndex == 2);
+        }
+
+        [Fact]
+        public void GivenRowData_GetCellText_ShouldContainValueOfTheCellWithGivenIndex()
+        {
+            // Given
+            var tableData = new TableData("table", new List<RowData>
+            {
+                new RowData(0, new List<CellData> {new CellData(0, "00"), new CellData(1, "01")}),
+                new RowData(1, new List<CellData> {new CellData(0, "10"), new CellData(1, "11")})
+            });
+
+            var orderedRows = tableData.OrderedRows.ToList();
+
+            // When + Then
+            Assert.True(orderedRows[0].GetCellText(0) == "00");
+            Assert.True(orderedRows[0].GetCellText(1) == "01");
+            Assert.True(orderedRows[1].GetCellText(0) == "10");
+            Assert.True(orderedRows[1].GetCellText(1) == "11");
+        }
     }
 }

@@ -6,6 +6,7 @@
     <Authors>nuki</Authors>
     <Company>tacta.io</Company>
     <RepositoryUrl>https://github.com/nusreta/TDocumentGeneration</RepositoryUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
