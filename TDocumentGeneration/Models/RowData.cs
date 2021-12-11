@@ -8,7 +8,7 @@ namespace TDocumentGeneration.Models
         public int RowIndex { get; }
         public IEnumerable<CellData> Cells { get; }
 
-        public string GetCellText(int columnIndex) => Cells.Single(x => x.ColumnIndex == columnIndex).Text;
+        public CellData GetCellData(int columnIndex) => Cells.Single(x => x.ColumnIndex == columnIndex);
 
         public RowData(int rowIndex, IEnumerable<CellData> cells)
         {

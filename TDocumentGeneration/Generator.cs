@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using Aspose.BarCode.Generation;
 using Aspose.Words;
@@ -76,10 +77,20 @@ namespace TDocumentGeneration
                     foreach (var node in row.Cells)
                     {
                         var cell = (Cell) node;
+
                         cell.RemoveAllChildren();
                         cell.EnsureMinimum();
-                        var text = rowData.GetCellText(row.Cells.IndexOf(cell));
-                        var run = new Run((Document) table.ParentNode.Document, text);
+
+                        var cellData = rowData.GetCellData(row.Cells.IndexOf(cell));
+
+                        if (!string.IsNullOrEmpty(cellData?.Style?.BackgroundColor))
+                        {
+                            cell.CellFormat.Shading.BackgroundPatternColor =
+                                Color.FromName(cellData.Style.BackgroundColor);
+                        }
+
+                        var run = new Run((Document) table.ParentNode.Document, cellData.Text);
+
                         cell.FirstParagraph.Runs.Add(run);
                     }
 

@@ -102,7 +102,7 @@ namespace TDocumentGeneration.Test
         }
 
         [Fact]
-        public void GivenRowData_GetCellText_ShouldContainValueOfTheCellWithGivenIndex()
+        public void GivenRowData_GetCellData_ShouldContainValueOfTheCellWithGivenIndex()
         {
             // Given
             var tableData = new TableData("table", new List<RowData>
@@ -114,10 +114,10 @@ namespace TDocumentGeneration.Test
             var orderedRows = tableData.OrderedRows.ToList();
 
             // When + Then
-            Assert.True(orderedRows[0].GetCellText(0) == "00");
-            Assert.True(orderedRows[0].GetCellText(1) == "01");
-            Assert.True(orderedRows[1].GetCellText(0) == "10");
-            Assert.True(orderedRows[1].GetCellText(1) == "11");
+            Assert.True(orderedRows[0].GetCellData(0).Text == "00");
+            Assert.True(orderedRows[0].GetCellData(1).Text == "01");
+            Assert.True(orderedRows[1].GetCellData(0).Text == "10");
+            Assert.True(orderedRows[1].GetCellData(1).Text == "11");
         }
     }
 }
